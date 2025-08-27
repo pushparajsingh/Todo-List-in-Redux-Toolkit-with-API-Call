@@ -1,0 +1,79 @@
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getList, deleteItem, selectCount, addItem } from "./Redux/reduxSlice";
+import styles from "./Todo.module.css";
+
+export function FormSubmit() {
+  const { TodoList, status, error } = useSelector(selectCount);
+  const dispatch = useDispatch();
+  const [todoText, setTodoText] = useState("");
+
+  useEffect(() => {
+    getTodoList();
+  }, []);
+
+  const getTodoList = () => {
+    dispatch(getList());
+  };
+
+  const deleteTodoItem = (id) => {
+    dispatch(deleteItem(id));
+  };
+
+  const changeInputText = (e) => {
+    setTodoText(e.target.value);
+  };
+
+  const addTodoItem = () => {
+    dispatch(
+      addItem({
+        userId: 5,
+        id: TodoList.length + 1,
+        title: todoText,
+        body: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolor, ea amet voluptatibus facilis saepe repellat ducimus veritatis, in doloribus, voluptate beatae nam id dignissimos! Asperiores vitae reprehenderit accusamus ut labore",
+      })
+    );
+  };
+
+  if (status == "loading") {
+    return <h1>Loading...</h1>;
+  }
+  if (status === "failed") return <h1>Error: {error}</h1>;
+
+  return (
+    <div>
+      <h1>Todo List</h1>
+      <input
+        type="text"
+        placeholder="Write Todo Title ..."
+        value={todoText}
+        onChange={changeInputText}
+      />{" "}
+      &nbsp;
+      <button onClick={addTodoItem}>Add</button>
+      <table>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Body</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {TodoList.map((item) => (
+            <tr key={item.id}>
+              <td>{item.id}</td>
+              <td>{item.title}</td>
+              <td>{item.body}</td>
+              <td className={styles.columnGap}>
+                <button onClick={() => deleteTodoItem(item.id)}>Delete</button>
+                <button>Edit</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
