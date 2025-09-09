@@ -30,6 +30,13 @@ export const store = createSlice({
     incrementByAmount: (state, action) => {
       state.value += action.payload;
     },
+    editList: (state, action) => {
+      state.TodoList.splice(
+        action.payload.toggle,
+        1,
+        action.payload.modelInputField
+      );
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -47,7 +54,7 @@ export const store = createSlice({
   },
 });
 
-export const { deleteItem, addItem } = store.actions;
+export const { deleteItem, addItem, editList } = store.actions;
 
 export const selectCount = (state) => state.store;
 
